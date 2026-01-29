@@ -6,7 +6,6 @@ import { getStoredUser, saveUser } from "./store";
 import { productService, authService } from "./Services/dbService";
 import { generateProductDescription } from "./Services/geminiService";
 import {
-  getValidImageUrls,
   validateAndLogImageState,
 } from "./utils/imageValidation";
 
