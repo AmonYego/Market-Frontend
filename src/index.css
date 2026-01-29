@@ -1,0 +1,19 @@
+/* Tailwind is loaded via CDN in index.html */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafb;
+}
+
+.spinner {
+  border: 3px solid rgba(4, 68, 20, 0.1);
+  border-left-color: #044414;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

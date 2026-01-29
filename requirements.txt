@@ -1,0 +1,16 @@
+google-generative-ai
+supabase-supabase-js
+react
+react-dom
+eslint-js
+types-node
+types-react
+types-react-dom
+vitejs-plugin-react
+eslint
+eslint-plugin-react-hooks
+eslint-plugin-react-refresh
+globals
+typescript
+typescript-eslint
+vite

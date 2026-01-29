@@ -1,0 +1,7 @@
+{
+  "name": "DeKUT Campus Marketplace",
+  "description": "A production-ready student marketplace for Dedan Kimathi University of Technology, featuring secure listings, WhatsApp integration, and smart product description assistance.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
