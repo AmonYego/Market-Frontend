@@ -99,7 +99,7 @@ const App: React.FC = () => {
       return (
         <div className="flex flex-col items-center justify-center py-40">
           <div className="spinner mb-4"></div>
-          <p className="text-gray-500 font-medium">Connecting to Backend...</p>
+          <p className="text-gray-500 font-medium">Loading Listings Please Wait...</p>
         </div>
       );
     }
