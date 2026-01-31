@@ -1,4 +1,3 @@
-
 import { Product, User } from '../types';
 
 const API_BASE_URL = 'https://dekut-market.onrender.com';
@@ -136,10 +135,7 @@ export const authService = {
     try {
       const payload = {
         id: user.id,
-        fullName: user.fullName,
         email: user.email,
-        course: user.course,
-        yearOfStudy: user.yearOfStudy,
         phone: user.phone
       };
 
