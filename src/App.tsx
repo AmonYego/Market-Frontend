@@ -6,7 +6,7 @@ import { getStoredUser, saveUser } from "./store";
 import { productService, authService } from "./Services/dbService";
 import { generateProductDescription } from "./Services/geminiService";
 import {
-  validateAndLogImageState,
+  validateAndLogImageState
 } from "./utils/imageValidation";
 
 const App: React.FC = () => {
@@ -99,7 +99,7 @@ const App: React.FC = () => {
       return (
         <div className="flex flex-col items-center justify-center py-40">
           <div className="spinner mb-4"></div>
-          <p className="text-gray-500 font-medium">Loading Listings Please Wait...</p>
+          <p className="text-gray-500 font-medium">Connecting...</p>
         </div>
       );
     }
@@ -529,8 +529,11 @@ const RegisterPage: React.FC<{
   onSwitch: () => void;
 }> = ({ onRegister, onSwitch }) => {
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     phone: "",
+    course: "",
+    year: "1",
     password: "",
   });
   const [error, setError] = useState("");
@@ -560,9 +563,9 @@ const RegisterPage: React.FC<{
       const newUser: User = {
         id: crypto.randomUUID(),
         email: normalizedEmail,
-        fullName: "",
-        course: "",
-        yearOfStudy: 1,
+        fullName: formData.fullName,
+        course: formData.course,
+        yearOfStudy: parseInt(formData.year),
         phone: formData.phone.startsWith("0")
           ? "254" + formData.phone.substring(1)
           : formData.phone,
@@ -580,7 +583,7 @@ const RegisterPage: React.FC<{
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+    <div className="max-w-xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
       <h2 className="text-3xl font-bold text-[#044414] mb-2">Create Account</h2>
       <p className="text-gray-500 mb-8">Join the marketplace community.</p>
       {error && (
@@ -588,7 +591,25 @@ const RegisterPage: React.FC<{
           {error}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      >
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Full Name
+          </label>
+          <input
+            type="text"
+            placeholder="Jane Doe"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
+            required
+            value={formData.fullName}
+            onChange={(e) =>
+              setFormData({ ...formData, fullName: e.target.value })
+            }
+          />
+        </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Student Email
@@ -621,23 +642,39 @@ const RegisterPage: React.FC<{
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Password
+            Course
           </label>
           <input
-            type="password"
-            placeholder="••••••••"
+            type="text"
+            placeholder="e.g. CS"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
             required
-            value={formData.password}
+            value={formData.course}
             onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
+              setFormData({ ...formData, course: e.target.value })
             }
           />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Year
+          </label>
+          <select
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
+            value={formData.year}
+            onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+          >
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+          </select>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#044414] text-white py-3 rounded-xl font-bold hover:bg-green-900 transition-all flex items-center justify-center gap-2"
+          className="md:col-span-2 bg-[#044414] text-white py-3 rounded-xl font-bold hover:bg-green-900 transition-all flex items-center justify-center gap-2"
         >
           {loading && (
             <div className="spinner border-white border-left-transparent w-4 h-4"></div>
