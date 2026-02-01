@@ -20,8 +20,6 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
-  course: string;
-  yearOfStudy: number;
   phone: string;
   createdAt: string;
 }
@@ -29,9 +27,8 @@ export interface User {
 export interface Product {
   id: string;
   userId: string;
+  // seller contact info — only phone is kept (course/year removed)
   sellerName: string;
-  sellerCourse: string;
-  sellerYear: number;
   sellerPhone: string;
   title: string;
   description: string;

@@ -5,9 +5,7 @@ import { User, Product, Category, Condition } from "./types";
 import { getStoredUser, saveUser } from "./store";
 import { productService, authService } from "./Services/dbService";
 import { generateProductDescription } from "./Services/geminiService";
-import {
-  validateAndLogImageState
-} from "./utils/imageValidation";
+import { validateAndLogImageState } from "./utils/imageValidation";
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<string>("home");
@@ -196,7 +194,6 @@ const App: React.FC = () => {
                 ))}
               </div>
             </header>
-              
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
@@ -447,11 +444,11 @@ const LoginPage: React.FC<{
 
     setLoading(true);
     try {
-      const profile = await authService.getProfileByEmail(normalizedEmail);
+      const profile = await authService.login(normalizedEmail, password);
       if (profile) {
         onLogin(profile);
       } else {
-        setError("Account does not exist. Please create an account first.");
+        setError("Invalid credentials or account does not exist.");
       }
     } catch (err) {
       setError("Connection failed. Please ensure backend is running.");
@@ -532,8 +529,6 @@ const RegisterPage: React.FC<{
     fullName: "",
     email: "",
     phone: "",
-    course: "",
-    year: "1",
     password: "",
   });
   const [error, setError] = useState("");
@@ -551,6 +546,17 @@ const RegisterPage: React.FC<{
       return;
     }
 
+    // Password validation: minimum 6 characters, must include letters and numbers
+    const pwd = formData.password;
+    const pwdRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+    if (!pwdRegex.test(pwd)) {
+      setError(
+        "Password must be at least 6 characters and include letters and numbers.",
+      );
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const existing = await authService.getProfileByEmail(normalizedEmail);
@@ -560,21 +566,28 @@ const RegisterPage: React.FC<{
         return;
       }
 
-      const newUser: User = {
+      const newUser: User & { password?: string } = {
         id: crypto.randomUUID(),
         email: normalizedEmail,
         fullName: formData.fullName,
-        course: formData.course,
-        yearOfStudy: parseInt(formData.year),
         phone: formData.phone.startsWith("0")
           ? "254" + formData.phone.substring(1)
           : formData.phone,
         createdAt: new Date().toISOString(),
+        password: formData.password,
       };
 
       const success = await authService.upsertProfile(newUser);
-      if (success) onRegister(newUser);
-      else setError("Could not save your profile. Please try again.");
+      if (success) {
+        const publicUser: User = {
+          id: newUser.id,
+          email: newUser.email,
+          fullName: newUser.fullName,
+          phone: newUser.phone,
+          createdAt: newUser.createdAt,
+        };
+        onRegister(publicUser);
+      } else setError("Could not save your profile. Please try again.");
     } catch (err) {
       setError("Something went wrong.");
     } finally {
@@ -642,34 +655,18 @@ const RegisterPage: React.FC<{
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Course
+            Password
           </label>
           <input
-            type="text"
-            placeholder="e.g. CS"
+            type="password"
+            placeholder="At least 6 chars, include letters and numbers"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
             required
-            value={formData.course}
+            value={formData.password}
             onChange={(e) =>
-              setFormData({ ...formData, course: e.target.value })
+              setFormData({ ...formData, password: e.target.value })
             }
           />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Year
-          </label>
-          <select
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
-            value={formData.year}
-            onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-          >
-            <option value="1">Year 1</option>
-            <option value="2">Year 2</option>
-            <option value="3">Year 3</option>
-            <option value="4">Year 4</option>
-            <option value="5">Year 5</option>
-          </select>
         </div>
         <button
           type="submit"
@@ -710,16 +707,16 @@ const CreateListingPage: React.FC<{
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = e.target.files;
-  if (!files || files.length === 0) return;
-  const incoming = Array.from(files);
-  setImageFiles((prev) => {
-    const combined = [...prev, ...incoming].slice(0, 3); // limit to 3
-    return combined;
-  });
-  // reset input so the same file can be selected again later
-  e.currentTarget.value = "";
-};
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const incoming = Array.from(files);
+    setImageFiles((prev) => {
+      const combined = [...prev, ...incoming].slice(0, 3); // limit to 3
+      return combined;
+    });
+    // reset input so the same file can be selected again later
+    e.currentTarget.value = "";
+  };
 
   const handleAIDescription = async () => {
     if (!title) {
@@ -734,14 +731,14 @@ const CreateListingPage: React.FC<{
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Prevent double submission
     if (isSubmitting) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const newProductPayload = {
         title,
@@ -875,7 +872,9 @@ const CreateListingPage: React.FC<{
               </div>
             ))}
             {imageFiles.length < 3 && (
-              <label className={`aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+              <label
+                className={`aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+              >
                 <span className="text-xs text-gray-400 font-medium">
                   Add Photo
                 </span>

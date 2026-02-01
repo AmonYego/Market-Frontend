@@ -47,7 +47,7 @@ export const productService = {
   async create(
     product: Omit<Product,
       'id' | 'createdAt' | 'updatedAt' |
-      'sellerName' | 'sellerCourse' | 'sellerYear' | 'sellerPhone'
+        'sellerName' | 'sellerPhone'
     >,
     user: User
   ): Promise<boolean> {
@@ -131,17 +131,16 @@ export const authService = {
       return null;
     }
   },
-
-  async upsertProfile(user: User): Promise<boolean> {
+  async upsertProfile(user: User & { password?: string }): Promise<boolean> {
     try {
-      const payload = {
+      const payload: any = {
         id: user.id,
         fullName: user.fullName,
         email: user.email,
-        course: user.course,
-        yearOfStudy: user.yearOfStudy,
-        phone: user.phone
+        phone: user.phone,
       };
+
+      if (user.password) payload.password = user.password;
 
       const response = await fetch(`${API_BASE_URL}/profiles`, {
         method: 'POST',
@@ -161,6 +160,26 @@ export const authService = {
     } catch (error) {
       console.error('Error updating profile:', error);
       return false;
+    }
+  },
+
+  async login(email: string, password: string): Promise<User | null> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Login error:', error);
+      return null;
     }
   }
 };
