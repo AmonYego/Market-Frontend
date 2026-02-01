@@ -1,7 +1,7 @@
 
 import { Product, User } from '../types';
 
-const API_BASE_URL = 'https://dekut-market-retry.onrender.com';
+const API_BASE_URL = 'https://kimathimarket-backend.onrender.com';
 
 export const productService = {
   async fetchAll(): Promise<Product[]> {
