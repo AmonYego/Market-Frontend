@@ -29,7 +29,7 @@ const App: React.FC = () => {
       setProducts(data);
     } catch (err: any) {
       setError(
-        "Unable to connect to the marketplace server. Please ensure the backend is running at http://127.0.0.1:8000",
+        "Unable to connect to the marketplace server.Please try again later.",
       );
       console.error(err);
     } finally {
@@ -222,10 +222,6 @@ const App: React.FC = () => {
             </div>
           </div>
         );
-
-      case "requirements":
-        return <RequirementsPage />;
-
       case "login":
         return (
           <LoginPage
@@ -320,7 +316,7 @@ const App: React.FC = () => {
             <span className="font-bold">DeKUT Marketplace</span>
           </div>
           <p className="text-gray-400 text-sm">
-            © 2026 Dedan Kimathi University Students. Cloud Sync Active.
+            © 2026 Dedan Kimathi University Students. Comrade Power.
           </p>
           <div className="flex gap-4">
             <button
@@ -451,7 +447,7 @@ const LoginPage: React.FC<{
         setError("Invalid credentials or account does not exist.");
       }
     } catch (err) {
-      setError("Connection failed. Please ensure backend is running.");
+      setError("Connection failed. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -644,7 +640,7 @@ const RegisterPage: React.FC<{
           </label>
           <input
             type="tel"
-            placeholder="0712345678"
+            placeholder="07xxxxxxxx"
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
             required
             value={formData.phone}
@@ -779,9 +775,8 @@ const CreateListingPage: React.FC<{
             </label>
             <input
               type="number"
-              placeholder="e.g. 1500"
+              placeholder="e.g. 950"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
-              required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               disabled={isSubmitting}
