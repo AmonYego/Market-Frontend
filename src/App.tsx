@@ -340,6 +340,85 @@ const App: React.FC = () => {
 
 // --- SUB-PAGES COMPONENTS ---
 
+const RequirementsPage: React.FC = () => {
+  return (
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-[#044414] mb-4">
+          Requirements & Guidelines
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Everything you need to know about joining and using the DeKUT student
+          marketplace.
+        </p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-green-100 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-[#044414]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">
+            Account Prerequisites
+          </h3>
+          <ul className="space-y-3 text-gray-600">
+            <li className="flex items-start gap-2">
+              <span className="text-green-500 mt-1">✓</span>
+              <span>
+                Valid student email ending with{" "}
+                <strong>@students.dkut.ac.ke</strong>
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-red-500">
+          <div className="bg-red-100 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-red-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">
+            Safety Protocols
+          </h3>
+          <p className="text-red-600 font-bold mb-2">
+            CRITICAL: Only meet in public areas.
+          </p>
+          <ul className="text-gray-600 space-y-1 text-sm italic">
+            <li>- DeKUT Mess / Dining Hall</li>
+            <li>- Library Square</li>
+            <li>- Freedom Square</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+};
+
 const LoginPage: React.FC<{
   onLogin: (u: User) => void;
   onSwitch: () => void;
@@ -698,6 +777,7 @@ const CreateListingPage: React.FC<{
               type="number"
               placeholder="e.g. 950"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#044414] focus:outline-none"
+              required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               disabled={isSubmitting}
