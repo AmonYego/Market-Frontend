@@ -97,7 +97,9 @@ const App: React.FC = () => {
       return (
         <div className="flex flex-col items-center justify-center py-40">
           <div className="spinner mb-4"></div>
-          <p className="text-gray-500 font-medium">Loading listings please wait...</p>
+          <p className="text-gray-500 font-medium">
+            Loading listings please wait...
+          </p>
         </div>
       );
     }
@@ -339,7 +341,6 @@ const App: React.FC = () => {
 };
 
 // --- SUB-PAGES COMPONENTS ---
-
 
 const LoginPage: React.FC<{
   onLogin: (u: User) => void;
@@ -865,7 +866,6 @@ const ProductDetailPage: React.FC<{
     );
   };
 
-  // Handle navigation to next/previous image
   const goToNextImage = () => {
     setActiveImage((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
   };

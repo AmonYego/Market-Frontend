@@ -1,7 +1,8 @@
 
 import { Product, User } from '../types';
 
-const API_BASE_URL = 'https://kimathimarket-backend.onrender.com';
+// API Base URL - uses environment variable or defaults to local backend
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export const productService = {
   async fetchAll(): Promise<Product[]> {
@@ -142,6 +143,8 @@ export const authService = {
 
       if (user.password) payload.password = user.password;
 
+      console.log('Sending profile to backend:', payload);
+      
       const response = await fetch(`${API_BASE_URL}/profiles`, {
         method: 'POST',
         headers: {
@@ -150,12 +153,18 @@ export const authService = {
         body: JSON.stringify(payload),
       });
 
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Backend error:', errorData);
+        console.error('Backend error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: responseData
+        });
         return false;
       }
 
+      console.log('Profile saved successfully:', responseData);
       return true;
     } catch (error) {
       console.error('Error updating profile:', error);
